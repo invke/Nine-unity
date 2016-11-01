@@ -1,0 +1,88 @@
+Here lies my scratch pad of thoughts as to how this project assembles together.
+Refer to this to grasp an overview of the intended relationships of the constructs.
+
+================
+World components
+================
+
+World
+
+Plane:
+    In most games there exists one plane within a world, but in this game there are 9 planes per world. It is a fourth dimensional
+    abstraction that is a means of expressing the over-arching non-eucludian world. An entity may exist at one point say < 4,4,4 > on one 
+    plane but not on another at the same point < 4,4,4 >. One way of thinking about them is to add a fourth componenet to the coordinate 
+    space, p < x,y,z,p > - the entity would thus exist within the position < 4,4,4,1 > while not at the other point < 4,4,4,2 > etc..
+
+    Nature:
+        I'm thinking that 0 is a good height to represent sea-level at. Thus negatives can be the crust, mantle / earth while
+        positive heights represent the height above sea level intuitively.
+        Then we will interpolate underground strata from the generated height to the core.
+
+Chunk: 
+    A chunk is a a uniform block of tiles that creates the environment. Meshes and their texturing will exist chunk-wide.
+    These will be the raw components that are dynamically loaded in and out with respect to the player. 
+
+
+Tile:
+    A tile is the fundamental unit of terrain, it is a 1000x250x1000 mm "block", thus in a traditional 1x1x1 m thinking, there is four tiles
+    vertically stacked to create a single "minecraftian" block.
+
+
+Structure:
+    A structure is an arrangement of numerous scenes that creates an overarching "structure" i.e. a dungeon, castle, village, house etc. 
+
+
+Scene:
+    A scene is a rule-based generation structure. Scenes are comprised of multiple nodes which define the structure. Scenes will represent
+    things like, rooms, tunnel sections, ruin layouts etc.
+
+
+Node:
+    An 8x8x8 unit square that defines a set of local rules to determine it's structure. Nodes will represent units of scenes, things like
+    variations of corners, variations of walls, variations of doors - any 8x8x8 unit to be used to create the overarching scenes and 
+    structures.
+
+
+    Let's take a simple dungeon for example. The dungeon consists of a room, approximately 16 units wide and 8 units deep and 
+    8 units high (all including walls). It is thus, composed of 2 nodes. Assuming it is a simple box, the rules would be that
+    the coordinate spaces of the four sides are "wall" assets, the highest slice is a comprised of "roof" assets and the lowest
+    are "floor" assets. The wall, roof and floor assets can then be decided for the entire scene / super-scene (structure) based
+    on the tileset and biom of the structure.
+        
+    0   # # # # # # # # # # # # # # # # 
+    0   #                             #
+    0   #                             #
+    0   #                             #
+    0   #                             #
+    0   #                             #
+    0   #                             #
+    0   # # # # # # # # # # # # # # # #
+
+        0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1
+
+
+===========
+Coordinates
+===========
+
+North/South = +/- Z axis
+East/West   = +/- X axis
+Up/Down     = +/- Y axis
+
+There are numerous coordinate systems at play within this project. The primary ones relevant to the world/plane/chunk 
+The general rule of thumb is the multi-unit objects coordinates represent their bottom left (south west) bounding corner. 
+
+Pos:
+    The true position within the world.
+
+ChunkPos:
+    The coordinate space for chunks, the root chunk, < 0,0,0 > sitting it's bottom south west corner (smallest bounding point) 
+    at 0,0,0 world position space. This chunks tiles thus are then extending into the positive directions, 0-32, 0-128 and 0-32 respectively.
+
+TilePos:
+    The coordinate space for tiles, the root chunk's tiles will thus exist in between:
+    0-32, 0-128, 0-32
+    The next chunk vertically will thus have all it's tiles lying between:
+    0-32, 128-256, 0-32
+
+
