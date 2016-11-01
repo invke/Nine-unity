@@ -10,10 +10,10 @@ namespace Assets.Core
 
     public class Plane : MonoBehaviour
     {
-        public static int PLANE_SIZE = 1;
-        public static int PLANE_WIDTH = 4;
-        public static int PLANE_HEIGHT = 2;
-        public static int PLANE_DEPTH = 4;
+        public static int PLANE_SIZE = 4;
+        public static int PLANE_WIDTH = 10;
+        public static int PLANE_HEIGHT = 4;
+        public static int PLANE_DEPTH = 10;
 
 
         // serialization test
@@ -131,16 +131,8 @@ namespace Assets.Core
             chunks.Add(chunkPos, chunk);
 
             // Modify prefab clone here to fit the plane generation.
-            for (int xi = 0; xi < Chunk.CHUNK_WIDTH; xi++) {
-                for (int yi = 0; yi < Chunk.CHUNK_HEIGHT; yi++) {
-                    for (int zi = 0; zi < Chunk.CHUNK_DEPTH; zi++) {
-                        int tx = x * Chunk.CHUNK_WIDTH + xi; 
-                        int ty = y * Chunk.CHUNK_HEIGHT + yi; 
-                        int tz = z * Chunk.CHUNK_DEPTH + zi;
-                        chunk.SetTile(tx, ty, tz, new SoilTile(tx, ty, tz));
-                    }
-                }
-            }
+            var terrainGenerator = new TerrainGenerator();
+            chunk = terrainGenerator.GenerateChunk(chunk);
 
             chunk.SetTilesUnmodified();
             Serialization.Load(chunk);

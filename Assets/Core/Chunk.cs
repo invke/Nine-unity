@@ -52,11 +52,6 @@ namespace Assets.Core
         {
             filter = gameObject.GetComponent<MeshFilter>();
             collider = gameObject.GetComponent<MeshCollider>();
-
-            // for (int x = 0; x < CHUNK_WIDTH; x++)
-            //     for (int y = 0; y < CHUNK_HEIGHT; y++)
-            //         for (int z = 0; z < CHUNK_DEPTH; z++)
-            //             SetTile(x, y, z, new SoilTile(x, y, z));
         }
 
 
@@ -78,7 +73,6 @@ namespace Assets.Core
         ///</summary>
         private MeshData UpdateMeshData() 
         {
-            // Debug.Log("Updating MeshData for Chunk " + chunkPos.x + "," + chunkPos.y + "," + chunkPos.z);
             MeshData mesh = new MeshData();
             
             for (int xi = 0; xi < CHUNK_WIDTH; xi++) {
@@ -89,8 +83,6 @@ namespace Assets.Core
                         int y = bswCorner.y + yi;
                         int z = bswCorner.z + zi;
                         Tile tile = tiles[xi, yi, zi];
-                        // Debug.Log("Getting MeshData for Tile " + xi + "," + yi + "," + zi);
-                        // Debug.Log(tile);
                         mesh = tile.TileData(this, x, y, z, mesh);
                     }
                 }
@@ -131,7 +123,6 @@ namespace Assets.Core
                 int zi = z - chunkPos.z * CHUNK_DEPTH;
                 tile = tiles[xi, yi, zi];
             } else
-                // tile = new AirTile(x, y, z);
                 return plane.GetTile(x, y, z);
 
             return tile;
@@ -152,11 +143,8 @@ namespace Assets.Core
                 tiles[xi, yi, zi] = tile;
                 toUpdate = true;
             } else {
-                Debug.LogError("OOB SetTile at " + x + "," + y + "," + z);
                 plane.SetTile(x, y, z, tile);
             }
-            // else
-                // plane.SetTile(x, y, z, tile);
         }
 
 
