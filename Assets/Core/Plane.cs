@@ -11,22 +11,25 @@ namespace Assets.Core
     public class Plane : MonoBehaviour
     {
         public static int PLANE_SIZE = 4;
-        public static int PLANE_WIDTH = 10;
-        public static int PLANE_HEIGHT = 4;
-        public static int PLANE_DEPTH = 10;
+        
+        public static int PLANE_WIDTH = 64;
+        public static int PLANE_HEIGHT = 2;
+        public static int PLANE_DEPTH = 64;
 
+        public static int XMIN = -(PLANE_WIDTH / 2);
+        public static int XMAX = (PLANE_WIDTH / 2) - 1;  // 0 1 2 3 [4] for a 10 wide plane
 
-        // serialization test
-        public int newChunkX = 0;
-        public int newChunkY = 0;
-        public int newChunkZ = 0;
-        public bool genChunk = false;
+        public static int YMIN = -(PLANE_HEIGHT / 2);
+        public static int YMAX = (PLANE_HEIGHT / 2) - 1;
+
+        public static int ZMIN = -(PLANE_DEPTH / 2);
+        public static int ZMAX = (PLANE_DEPTH / 2) - 1;
+    
 
 
         public string planeName = "Plane 0";
 
-        public Dictionary<ChunkPos, Chunk> chunks = new Dictionary<ChunkPos, Chunk>(); 
-        // public Chunk[,,] chunks = new Chunk[PLANE_WIDTH, PLANE_HEIGHT, PLANE_DEPTH]; 
+        public Dictionary<ChunkPos, Chunk> chunks = new Dictionary<ChunkPos, Chunk>();
 
         public GameObject chunkPreFab;
 
@@ -34,42 +37,13 @@ namespace Assets.Core
         public Plane() {}
 
 
-        /// <summary>
-        /// Start is called on the frame when a script is enabled just before
-        /// any of the Update methods is called the first time.
-        /// </summary>
-        void Start()
-        {
-            for (int x = 0; x < PLANE_WIDTH; x++)   
-                for (int y = 0; y < PLANE_HEIGHT; y++)   
-                    for (int z = 0; z < PLANE_DEPTH; z++)
-                        CreateChunk(x, y, z);
-        }
-
-
-        /// <summary>
-        /// Update is called every frame, if the MonoBehaviour is enabled.
-        /// </summary>
-        void Update()
-        {
-            if (genChunk) {
-                genChunk = false;
-                ChunkPos chunkPos = new ChunkPos(newChunkX, newChunkY, newChunkZ);
-                Chunk chunk = null;
-
-                if (chunks.TryGetValue(chunkPos, out chunk))
-                    DestroyChunk(chunkPos.x, chunkPos.y, chunkPos.z);
-                else
-                    CreateChunk(chunkPos.x, chunkPos.y, chunkPos.z);
-            }   
-        }
-
-
         public void SetTile(int x, int y, int z, Tile tile) 
         {
             ChunkPos chunkPos = new TilePos(x, y, z).GetChunkPos();
             if (InXRange(chunkPos.x) && InYRange(chunkPos.y) && InZRange(chunkPos.z)) {
                 Chunk chunk = GetChunk(chunkPos.x, chunkPos.y, chunkPos.z);
+                if (chunk == null) 
+                    return;
                 chunk.SetTile(x, y, z, tile);
 
                 if (x - chunkPos.GetTilePos().x == 0) {
@@ -105,6 +79,8 @@ namespace Assets.Core
             ChunkPos chunkPos = new TilePos(x, y, z).GetChunkPos();
             if (InXRange(chunkPos.x) && InYRange(chunkPos.y) && InZRange(chunkPos.z)) {
                 Chunk chunk = GetChunk(chunkPos.x, chunkPos.y, chunkPos.z);
+                if (chunk == null) 
+                    return new AirTile(0, 0, 0);
                 return chunk.GetTile(x, y, z);
             } else {
                 return new AirTile(0, 0, 0);
@@ -168,34 +144,19 @@ namespace Assets.Core
 
         private bool InXRange(int x) 
         {
-            int lowerBound = 0;
-            int upperBound = lowerBound + PLANE_WIDTH;
-            if (x >= lowerBound && x < upperBound) 
-                return true;
-            else
-                return false;
+            return XMIN <= x && x <= XMAX;
         }
 
 
         private bool InYRange(int y)
         {
-            int lowerBound = 0;
-            int upperBound = lowerBound + PLANE_HEIGHT;
-            if (y >= lowerBound && y < upperBound) 
-                return true;
-            else
-                return false;
+            return YMIN <= y && y <= YMAX;
         }
 
 
         private bool InZRange(int z) 
         {
-            int lowerBound = 0;
-            int upperBound = lowerBound + PLANE_DEPTH;
-            if (z >= lowerBound && z < upperBound) 
-                return true;
-            else
-                return false;
+            return ZMIN <= z && z <= ZMAX;
         }
     }
 }

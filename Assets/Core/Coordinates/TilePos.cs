@@ -1,5 +1,5 @@
 using System;
-
+using UnityEngine;
 
 namespace Assets.Core.Coordinates
 {
@@ -24,13 +24,23 @@ namespace Assets.Core.Coordinates
         public ChunkPos GetChunkPos() 
         {
             // Careful - negative int division results in negative quotient (must phase by -1) 
-            int cx = x / Chunk.CHUNK_WIDTH;
+            int cx = (x < 0 ? x + 1 : x) / Chunk.CHUNK_WIDTH;
             if (x < 0) cx--;
-            int cy = y / Chunk.CHUNK_HEIGHT;
+            int cy = (y < 0 ? y + 1 : y) / Chunk.CHUNK_HEIGHT;
             if (y < 0) cy--;
-            int cz = z / Chunk.CHUNK_DEPTH;
+            int cz = (z < 0 ? z + 1 : z) / Chunk.CHUNK_DEPTH;
             if (z < 0) cz--;
             return new ChunkPos(cx, cy, cz);
+        }
+
+
+        public static TilePos FromWorldPos(Vector3 worldPos)
+        {
+            return new TilePos(
+                Mathf.FloorToInt(worldPos.x),
+                Mathf.FloorToInt(4 * worldPos.y),
+                Mathf.FloorToInt(worldPos.z)
+            );
         }
     }
 }

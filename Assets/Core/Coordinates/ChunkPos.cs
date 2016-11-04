@@ -22,18 +22,24 @@ namespace Assets.Core.Coordinates
         }
 
 
+        public static ChunkPos FromWorldPos(Vector3 worldPos)
+        {
+            int x = Mathf.FloorToInt(Mathf.FloorToInt(worldPos.x) / Chunk.CHUNK_WIDTH);
+            int y = Mathf.FloorToInt(Mathf.FloorToInt(worldPos.y / 0.25f) / Chunk.CHUNK_HEIGHT);
+            int z = Mathf.FloorToInt(Mathf.FloorToInt(worldPos.z) / Chunk.CHUNK_DEPTH);
+            if (x < 0) x--;
+            if (y < 0) y--;
+            if (z < 0) z--;
+            return new ChunkPos(x, y, z);
+        }
+
+
         public TilePos GetTilePos()
         {
             return new TilePos(
                 x * Chunk.CHUNK_WIDTH,
                 y * Chunk.CHUNK_HEIGHT,
                 z * Chunk.CHUNK_DEPTH);
-        }
-
-
-        public Vector3 WorldPos() 
-        {
-            return new Vector3(x, y, z);
         }
 
 

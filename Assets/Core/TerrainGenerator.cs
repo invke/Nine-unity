@@ -20,11 +20,12 @@ namespace Assets.Core
         public float soilNoise = 0.04f;
         public float soilNoiseHeight = 3;
 
+        public int deletionTimer = 0;
 
 
         public static int GetNoise(int x, int y, int z, float scale, int max)
         {
-            return Mathf.FloorToInt((Noise.Generate(x * scale, y * scale, z * scale) + 1f) * (max / 2f));
+            return Mathf.FloorToInt((Noise.Generate(x * scale, 4 * y * scale, z * scale) + 1f) * (max / 2f));
         }
 
 
@@ -50,13 +51,15 @@ namespace Assets.Core
             if (stoneHeight < stoneMinHeight)
                 stoneHeight = Mathf.FloorToInt(stoneMinHeight);
             stoneHeight += GetNoise(x, 0, z, stoneBaseNoise, Mathf.FloorToInt(stoneBaseNoiseHeight));
+            stoneHeight += 16;
 
             // Generate the dirt height
             int soilHeight = stoneHeight + Mathf.FloorToInt(soilBaseHeight);
             soilHeight += GetNoise(x, 100, z, soilNoise, Mathf.FloorToInt(soilNoiseHeight));
+            soilHeight += 16;
 
             TilePos chunkOrigin = chunk.chunkPos.GetTilePos();
-            for (int y = 0; y < chunkOrigin.y + Chunk.CHUNK_HEIGHT; y++) {
+            for (int y = chunkOrigin.y; y < chunkOrigin.y + Chunk.CHUNK_HEIGHT; y++) {
                 if (y <= stoneHeight)
                     chunk.SetTile(x, y, z, new StoneTile(x, y, z));
                 else if (y <= soilHeight)

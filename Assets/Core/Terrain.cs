@@ -10,11 +10,7 @@ namespace Assets.Core
         ///<summary>
         public static TilePos GetTilePos(Vector3 worldPos)
         {
-            TilePos tilePos = new TilePos(
-                Mathf.RoundToInt(worldPos.x),
-                Mathf.RoundToInt(4 * worldPos.y),
-                Mathf.RoundToInt(worldPos.z)
-            );
+            TilePos tilePos = TilePos.FromWorldPos(worldPos);
             return tilePos;
         }
 

@@ -25,7 +25,9 @@ namespace Assets.Core
 
         public Plane plane;
 
-        public bool toUpdate = true;
+        public bool toUpdate = false;
+
+        public bool rendered = false;
         
         protected MeshFilter filter;
 
@@ -48,7 +50,7 @@ namespace Assets.Core
         /// Start is called on the frame when a script is enabled just before
         /// any of the Update methods is called the first time.
         /// </summary>
-        void Start() 
+        void Start()
         {
             filter = gameObject.GetComponent<MeshFilter>();
             collider = gameObject.GetComponent<MeshCollider>();
@@ -58,7 +60,7 @@ namespace Assets.Core
         /// <summary>
         /// Update is called every frame, if the MonoBehaviour is enabled.
         /// </summary>
-        void Update() 
+        void Update()
         {
             if (toUpdate) {
                 toUpdate = false;
@@ -73,16 +75,20 @@ namespace Assets.Core
         ///</summary>
         private MeshData UpdateMeshData() 
         {
+            rendered = true;
             MeshData mesh = new MeshData();
             
             for (int xi = 0; xi < CHUNK_WIDTH; xi++) {
                 for (int yi = 0; yi < CHUNK_HEIGHT; yi++) {
                     for (int zi = 0; zi < CHUNK_DEPTH; zi++) {
+                        Tile tile = tiles[xi, yi, zi];
+                        if (tile == null || mesh == null)
+                            continue;
+
                         TilePos bswCorner = chunkPos.GetTilePos();
                         int x = bswCorner.x + xi;
                         int y = bswCorner.y + yi;
                         int z = bswCorner.z + zi;
-                        Tile tile = tiles[xi, yi, zi];
                         mesh = tile.TileData(this, x, y, z, mesh);
                     }
                 }
@@ -117,7 +123,7 @@ namespace Assets.Core
         public Tile GetTile(int x, int y, int z) 
         {
             Tile tile;
-            if ((InXRange(x)) && InYRange(y) && InZRange(z)) { 
+            if (InXRange(x) && InYRange(y) && InZRange(z)) { 
                 int xi = x - chunkPos.x * CHUNK_WIDTH;
                 int yi = y - chunkPos.y * CHUNK_HEIGHT;
                 int zi = z - chunkPos.z * CHUNK_DEPTH;
@@ -126,11 +132,6 @@ namespace Assets.Core
                 return plane.GetTile(x, y, z);
 
             return tile;
-        }
-
-
-        public Tile[,,] Peek() {
-            return tiles;
         }
 
 

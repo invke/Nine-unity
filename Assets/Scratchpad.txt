@@ -72,17 +72,46 @@ Up/Down     = +/- Y axis
 There are numerous coordinate systems at play within this project. The primary ones relevant to the world/plane/chunk 
 The general rule of thumb is the multi-unit objects coordinates represent their bottom left (south west) bounding corner. 
 
-Pos:
-    The true position within the world.
+However, a tile is rendered around it's point.
 
-ChunkPos:
-    The coordinate space for chunks, the root chunk, < 0,0,0 > sitting it's bottom south west corner (smallest bounding point) 
-    at 0,0,0 world position space. This chunks tiles thus are then extending into the positive directions, 0-32, 0-128 and 0-32 respectively.
+
+WorldPos (Vector3):
+    The true position within the world.
 
 TilePos:
     The coordinate space for tiles, the root chunk's tiles will thus exist in between:
     0-32, 0-128, 0-32
     The next chunk vertically will thus have all it's tiles lying between:
     0-32, 128-256, 0-32
+
+ChunkPos:
+    The coordinate space for chunks, the root chunk, < 0,0,0 > sitting it's bottom south west corner (smallest bounding point) 
+    at 0,0,0 world position space. This chunks tiles thus are then extending into the positive directions, 0-32, 0-128 and 0-32 respectively.
+
+
+
+WorldPos -> TilePos
+        Tp  =   FloorToInt(Wp * (tp/m))
+    e.g. for X & Z
+        Wp  =   17.54
+        Tp  =   FloorToInt(17.54 / (1 tp/m)) 
+            =   FloorToInt(17.54)
+            =   17
+        for Y
+        Tp  =   FloorToInt(17.54 / (0.25 tp/m))
+            =   FloorToInt(70.16)
+            =   70
+
+WorldPos -> ChunkPos
+        Cp  =   FloorToInt(Tp / [length of dimension]) : -1, if negative
+    e.g. for X & Z
+        Cp  =   FloorToInt(17 / 16)
+            =   1
+    e.g. for Y
+        Tp  =   FloorToInt(70 / 64) 
+            =   1
+    e.g. for -Y
+        Tp  =   FloorToInt(-70 / 64) - 1
+            =   -2
 
 
