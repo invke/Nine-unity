@@ -9,7 +9,7 @@ namespace Assets.Core
     {
         public GameObject target;
 
-        Vector3 offset;
+        private Vector3 offset;
 
 
         public float damping = 1f;

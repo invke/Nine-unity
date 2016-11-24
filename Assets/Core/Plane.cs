@@ -13,7 +13,7 @@ namespace Assets.Core
         public static int PLANE_SIZE = 4;
         
         public static int PLANE_WIDTH = 64;
-        public static int PLANE_HEIGHT = 2;
+        public static int PLANE_HEIGHT = 4;
         public static int PLANE_DEPTH = 64;
 
         public static int XMIN = -(PLANE_WIDTH / 2);
